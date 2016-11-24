@@ -1,0 +1,5 @@
+1. Normalisation at the moment non-existent
+
+2. Whitespace preservation during tokenization
+
+3. Near_matching on punctuation (may not be necessary when markup influences alignment)
