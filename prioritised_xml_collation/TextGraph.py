@@ -1,7 +1,7 @@
 from collections import namedtuple, defaultdict
 # defaultdict is a subclass of dict
 
-from prioritised_xml_collation.tokenizer_unittest import TextToken
+from prioritised_xml_collation.tokenizer import TextToken
 
 Annotation = namedtuple('Annotation', ['tagname', 'witnesses', 'range_start', 'range_end', 'level'])
 

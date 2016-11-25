@@ -1,7 +1,10 @@
 import unittest
+
 from prioritised_xml_collation.TextGraph import convert_superwitness_to_textgraph
-from prioritised_xml_collation.alignment_text_tokens_unittest import align_tokens_and_return_superwitness
-from prioritised_xml_collation.tokenizer_unittest import convert_xml_file_into_tokens
+from prioritised_xml_collation.tokenizer import convert_xml_file_into_tokens
+from unittests.alignment_text_tokens_unittest import align_tokens_and_return_superwitness
+
+
 # from prioritised_xml_collation.text_graph_exporter import export_as_dot
 
 class TextGraph(unittest.TestCase):

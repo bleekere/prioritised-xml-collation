@@ -1,15 +1,8 @@
 import unittest
 
 from prioritised_xml_collation.EditGraphAligner import EditGraphAligner
-from prioritised_xml_collation.tokenizer_unittest import convert_xml_file_into_tokens
-
-
-def align_tokens_and_return_superwitness(tokens1, tokens2):
-    # align sequences of tokens. Results in segments.
-    aligner = EditGraphAligner()
-    aligner.align(tokens1, tokens2)
-    superwitness = aligner.superwitness
-    return superwitness
+from prioritised_xml_collation.coordination import align_tokens_and_return_superwitness
+from prioritised_xml_collation.tokenizer import convert_xml_file_into_tokens
 
 
 class SuperwitnessText(unittest.TestCase):
