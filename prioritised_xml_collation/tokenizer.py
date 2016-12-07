@@ -2,6 +2,8 @@ import re
 import unittest
 from xml.dom.minidom import getDOMImplementation
 from xml.dom.pulldom import CHARACTERS, START_ELEMENT, parse, END_ELEMENT, parseString
+from collections import namedtuple, defaultdict
+
 
 
 # - make Token object
@@ -31,7 +33,7 @@ class ElementToken(Token):
     pass
 
 
-class AnnotationInformation:
+class AnnotationInformation(object):
     # TODO possible other fields are content, attribute, namespace
     def __init__(self, tag_name):
         self.tag_name = tag_name
@@ -43,6 +45,14 @@ class AnnotationInformation:
         return self.tag_name
 
 
+class Stack(list):
+    def push(self, item):
+        self.append(item)
+
+    def peek(self):
+        return self[-1]
+
+
 # parse xml file
 def convert_xml_file_into_tokens(xml_filename):
     doc = parse(xml_filename)
@@ -52,15 +62,21 @@ def convert_xml_file_into_tokens(xml_filename):
 # convert xml document into tokens
 def convert_xml_doc_into_tokens(xml_doc):
     tokens = []
+    # keep administration with stack
+    open_tags_in_witness = Stack()
     annot_info = None
     for event, node in xml_doc:
         if event == CHARACTERS:
             tokens.extend(tokenize_text(node.data, annot_info))
         elif event == START_ELEMENT:
             annot_info = AnnotationInformation(node.tagName)
+            # append item annot_info to stack list
+            open_tags_in_witness.push(annot_info)
         elif event == END_ELEMENT:
-            pass
-        #TODO include END_ELEMENT
+            # retrieve item from top of stack
+            open_tags_in_witness.pop()
+            if open_tags_in_witness:
+                annot_info = open_tags_in_witness.peek()
 
     return tokens
 
