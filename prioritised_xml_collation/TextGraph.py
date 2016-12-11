@@ -1,7 +1,7 @@
 from collections import namedtuple, defaultdict
 # defaultdict is a subclass of dict
 
-from prioritised_xml_collation.tokenizer_unittest import TextToken
+from prioritised_xml_collation.tokenizer import TextToken
 
 Annotation = namedtuple('Annotation', ['tagname', 'witnesses', 'range_start', 'range_end', 'level'])
 
@@ -60,6 +60,7 @@ def convert_superwitness_to_textgraph(superwitness):
         if isinstance(token, TextToken):
             text_token_counter += 1
         else:
+            # token is element
             if token.content.startswith("/"):
                 # end tag
                 # print("closing: "+token.content)
