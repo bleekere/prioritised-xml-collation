@@ -7,7 +7,7 @@ from prioritised_xml_collation.tokenizer import tokenize_text, convert_xml_file_
 class ParentTextToken(unittest.TestCase):
     def test_find_your_parent_A(self):
         xml_filename = open(
-            "/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
+            "../input_xml/witA-s021-simple.xml")
         # create list of token objects from input
         tokenized_input = convert_xml_file_into_tokens(xml_filename)
         token_list = [(token.content, token.annot_info.tag_name) for token in tokenized_input]
@@ -19,7 +19,7 @@ class ParentTextToken(unittest.TestCase):
 
     def test_find_your_parent_B(self):
         xml_filename = open(
-            "/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
+            "../input_xml/witB-s021-simple.xml")
         # create list of token objects from input
         tokenized_input = convert_xml_file_into_tokens(xml_filename)
         token_list = [(token.content, token.annot_info.tag_name) for token in tokenized_input]
@@ -32,7 +32,7 @@ class ParentTextToken(unittest.TestCase):
 
     def test_find_your_real_parent_B(self):
         xml_filename = open(
-            "/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
+            "../input_xml/witB-s021-simple.xml")
         # create list of token objects from input
         tokenized_input = convert_xml_file_into_tokens(xml_filename)
         # assert whether annot_info of item 0 == annot_info of item 10
