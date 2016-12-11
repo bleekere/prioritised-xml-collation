@@ -51,7 +51,7 @@ def tokenize_text(data):
 
 class TokenizeText(unittest.TestCase):
     def test_text_tokens(self):
-        xml_filename = open("input_xml/witA-s021-simple.xml")
+        xml_filename = open("../input_xml/witA-s021-simple.xml")
         # create list of token objects from input
         tokenized_input = convert_xml_file_into_tokens(xml_filename)
         # transform list of tokens to list of strings because it is easier to test

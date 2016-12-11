@@ -4,10 +4,11 @@ from prioritised_xml_collation.alignment_text_tokens_unittest import align_token
 from prioritised_xml_collation.tokenizer_unittest import convert_xml_file_into_tokens
 # from prioritised_xml_collation.text_graph_exporter import export_as_dot
 
+
 class TextGraph(unittest.TestCase):
     def test_text_graph(self):
-        witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
-        witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
+        witA = open("../input_xml/witA-s021-simple.xml")
+        witB = open("../input_xml/witB-s021-simple.xml")
         tokens_a = convert_xml_file_into_tokens(witA)
         tokens_b = convert_xml_file_into_tokens(witB)
         superwitness = align_tokens_and_return_superwitness(tokens_a, tokens_b)
