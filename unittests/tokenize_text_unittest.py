@@ -1,7 +1,7 @@
 import unittest
 
 from prioritised_xml_collation.tokenizer import convert_xml_file_into_tokens
-
+# TODO update functionality and expected output
 
 class TokenizeText(unittest.TestCase):
     @unittest.skip("Unittest fails because we do not take end element into account yet.")
