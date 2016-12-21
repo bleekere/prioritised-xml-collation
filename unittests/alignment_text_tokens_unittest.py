@@ -2,7 +2,7 @@ import unittest
 
 from prioritised_xml_collation.EditGraphAligner import EditGraphAligner
 from prioritised_xml_collation.coordination import align_tokens_and_return_superwitness
-from prioritised_xml_collation.tokenizer import convert_xml_file_into_tokens
+from prioritised_xml_collation.tokenizer import Tokenizer
 
 
 class SuperwitnessText(unittest.TestCase):
@@ -10,8 +10,9 @@ class SuperwitnessText(unittest.TestCase):
     def test_superwitness_tokens_near_matching_on_punctuation(self):
         witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
         witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
-        tokens_a = convert_xml_file_into_tokens(witA)
-        tokens_b = convert_xml_file_into_tokens(witB)
+        tokenizer = Tokenizer()
+        tokens_a = tokenizer.convert_xml_file_into_tokens(witA)
+        tokens_b = tokenizer.convert_xml_file_into_tokens(witB)
         superwitness = align_tokens_and_return_superwitness(tokens_a, tokens_b)
         list_superwitness_string = [str(token) for token in superwitness]
         print(list_superwitness_string)
@@ -23,20 +24,23 @@ class SuperwitnessText(unittest.TestCase):
     def test_superwitness_tokens(self):
         witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
         witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
-        tokens_a = convert_xml_file_into_tokens(witA)
-        tokens_b = convert_xml_file_into_tokens(witB)
+        tokenizer = Tokenizer()
+        tokens_a = tokenizer.convert_xml_file_into_tokens(witA)
+        tokens_b = tokenizer.convert_xml_file_into_tokens(witB)
         superwitness = align_tokens_and_return_superwitness(tokens_a, tokens_b)
         list_superwitness_string = [str(segment) for segment in superwitness]
         print(list_superwitness_string)
-        expected = ['Hoe, zoet, moet, nochtans, zijn, dit, werven, om, trachten, naar, een, vrouw', "['-,', '-de', '-ongewisheid']->['+!', '+Die', '+dagen', '+van', '+nerveuze', '+verwachting']",
+        expected = ['Hoe, zoet, moet, nochtans, zijn, dit, werven, om, trachten, naar, een, vrouw',
+                    "['-,', '-de', '-ongewisheid']->['+!', '+Die', '+dagen', '+van', '+nerveuze', '+verwachting']",
                     'vóór, de, liefelijke, toestemming', "['-!']->['+.']"]
         self.assertEqual(expected, list_superwitness_string)
 
     def test_superwitness_segmentation(self):
         witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
         witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
-        tokens_a = convert_xml_file_into_tokens(witA)
-        tokens_b = convert_xml_file_into_tokens(witB)
+        tokenizer = Tokenizer()
+        tokens_a = tokenizer.convert_xml_file_into_tokens(witA)
+        tokens_b = tokenizer.convert_xml_file_into_tokens(witB)
         # get results of segmented superwitness from method below
         segmented_superwitness = self.refine_segments_of_superwitness(tokens_a, tokens_b)
         # exptected output is a tuple of two values:
@@ -65,11 +69,3 @@ class SuperwitnessText(unittest.TestCase):
             else:
                 segmented_superwitness.append(("aligned", str(tokens_witness_a)))
         return segmented_superwitness
-
-
-
-
-
-
-
-
