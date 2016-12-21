@@ -18,16 +18,40 @@ class EditGraphNode(object):
 
 
 class Segment(object):
-    def __init__(self, tokens, aligned, addition):
+    def __init__(self, tokens, aligned, addition, replacement):
+        # the field self.tokens is a tuple of a token list
         self.tokens = tokens
         self.aligned = aligned
         self.addition = addition
+        self.replacement = replacement
+
+    @property
+    def witnesses(self):
+        if self.aligned:
+            return ["A", "B"]
+        elif self.addition:
+            return ["B"]
+        else:
+            # TODO: add unit test for this specific case (omission)
+            return ["A"]
 
     def __str__(self):
+        # call the informal 'nicely printable' string representation of the object
         return repr(self)
 
     def __repr__(self):
-        return " ".join(str(token) for token in self.tokens)
+        # call the official string representation of the object
+        prefix = ""
+        if not self.aligned:
+            # self.tokens is a tuple so define which element we need
+            if self.addition:
+                return str(["+" + str(token) for token in self.tokens[0]])
+            if self.replacement:
+                tokens_witness_a, tokens_witness_b = self.tokens
+                return str(["-" + str(token) for token in tokens_witness_a]) + "->" + str(["+" + str(token) for token in tokens_witness_b])
+            else:
+                return str(["-" + str(token) for token in self.tokens[0]])
+        return ", ".join([str(token) for token in self.tokens[0]])
 
 
 class ExtendedToken(object):
@@ -138,26 +162,27 @@ class EditGraphAligner(object):
     def add_to_superwitness(self, cell, witness_a, witness_b, x, y):
         tokens_witness_a = witness_a[x:self.last_x]
         tokens_witness_b = witness_b[y:self.last_y]
-        # for debugging of the alignment purposes turn next line on
-        # print(tokens_witness_b)
+        # self.superwitness is an empty list
+        # with insert we insert the Segment object in the beginning of the list
+        # if next cell is match, look at current cell:
         if cell.match:
-            if tokens_witness_b:
-                extended_token_segment = []
-                for token in tokens_witness_b:
-                    extended_token_segment.append(ExtendedToken(token, False, True))
-                self.superwitness = extended_token_segment + self.superwitness
-            if tokens_witness_a:
+            # we first check for replacement otherwise the tokens are duplicated in the superwitness
+            # if replacement (= omission followed by addition)
+            if tokens_witness_a and tokens_witness_b:
+                self.superwitness.insert(0, Segment((tokens_witness_a, tokens_witness_b), False, False, True))
+            # addition
+            # tuple of one value: tokens_witness_b, None
+            elif tokens_witness_b:
+                self.superwitness.insert(0, Segment((tokens_witness_b, None), False, True, False))
+            # omission
+            elif tokens_witness_a:
                 # print x, self.last_x, y, self.last_y
-                extended_token_segment = []
-                for token in tokens_witness_a:
-                    extended_token_segment.append(ExtendedToken(token, False, False))
-                    # print omitted_base
-                self.superwitness = extended_token_segment + self.superwitness
+                self.superwitness.insert(0, Segment((tokens_witness_a, None), False, False, False))
         else:
-                extended_token_segment = []
-                for token in tokens_witness_b:
-                    extended_token_segment.append(ExtendedToken(token, True, False))
-                self.superwitness = extended_token_segment + self.superwitness
+            # current cell matches next cell
+            # aligned
+                self.superwitness.insert(0, Segment((tokens_witness_b, None), True, False, False))
+
 
     # This function traverses the table diagonally and calls the supplied function for each cell.
     # Original function from Mark Byers; translated from C into Python.

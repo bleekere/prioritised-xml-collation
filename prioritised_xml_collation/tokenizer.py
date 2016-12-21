@@ -34,7 +34,7 @@ class ElementToken(Token):
 
 
 class AnnotationInformation(object):
-    # TODO possible other fields are content, attribute, namespace
+    # TODO possible other fields are attribute, namespace (textual content?)
     def __init__(self, tag_name):
         self.tag_name = tag_name
 
@@ -79,7 +79,6 @@ def convert_xml_doc_into_tokens(xml_doc):
                 annot_info = open_tags_in_witness.peek()
 
     return tokens
-
 
 
 # tokenize text
