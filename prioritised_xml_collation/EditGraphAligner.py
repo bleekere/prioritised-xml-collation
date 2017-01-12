@@ -49,7 +49,7 @@ class Segment(object):
         if not self.aligned:
             # self.tokens is a tuple so define which element we need
             if self.addition:
-                return str(["+" + str(token) for token in self.tokens[0]])
+                return str(["+" + str(token) for token in self.tokens[1]])
             if self.replacement:
                 tokens_witness_a, tokens_witness_b = self.tokens
                 return str(["-" + str(token) for token in tokens_witness_a]) + "->" + str(["+" + str(token) for token in tokens_witness_b])
@@ -177,7 +177,7 @@ class EditGraphAligner(object):
             # addition
             # tuple of one value: tokens_witness_b, None
             elif tokens_witness_b:
-                self.superwitness.insert(0, Segment((tokens_witness_b, None), False, True, False))
+                self.superwitness.insert(0, Segment((None, tokens_witness_b), False, True, False))
             # omission
             elif tokens_witness_a:
                 # print x, self.last_x, y, self.last_y
@@ -185,7 +185,7 @@ class EditGraphAligner(object):
         else:
             # current cell matches next cell
             # aligned
-                self.superwitness.insert(0, Segment((tokens_witness_b, None), True, False, False))
+                self.superwitness.insert(0, Segment((tokens_witness_a, tokens_witness_b), True, False, False))
 
 
     # This function traverses the table diagonally and calls the supplied function for each cell.

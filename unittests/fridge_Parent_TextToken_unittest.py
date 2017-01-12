@@ -1,7 +1,7 @@
 import unittest
 from collections import namedtuple
 
-from prioritised_xml_collation.tokenizer import tokenize_text, convert_xml_file_into_tokens
+from prioritised_xml_collation.fridge import convert_xml_file_into_tokens
 # TODO update functionality and expected output
 
 
