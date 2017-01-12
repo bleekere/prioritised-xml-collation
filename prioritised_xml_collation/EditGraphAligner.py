@@ -4,7 +4,10 @@
     This class uses dynamic programming to find the optimal alignment between
     two lists of strings/tokens given a certain scoring function.
 """
+from typing import Tuple, List
+
 from prioritised_xml_collation.exact_match_scorer import Scorer
+from prioritised_xml_collation.tokenizer import Token
 
 
 class EditGraphNode(object):
@@ -18,8 +21,9 @@ class EditGraphNode(object):
 
 
 class Segment(object):
-    def __init__(self, tokens, aligned, addition, replacement):
-        # the field self.tokens is a tuple of a token list
+    def __init__(self, tokens: Tuple[List[Token], List[Token]], aligned, addition, replacement):
+        # the field self.tokens is a tuple of two list of token objects
+        # TODO look at complexity of parameter 'tokens' and consider a simpler parameter
         self.tokens = tokens
         self.aligned = aligned
         self.addition = addition
