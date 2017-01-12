@@ -8,8 +8,8 @@ from prioritised_xml_collation.tokenizer import Tokenizer
 class SuperwitnessText(unittest.TestCase):
     @unittest.skip("Unittest fails if near_matching on punctuation is turned off.")
     def test_superwitness_tokens_near_matching_on_punctuation(self):
-        witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
-        witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
+        witA = open("../input_xml/witA-s021-simple.xml")
+        witB = open("../input_xml/witB-s021-simple.xml")
         tokenizer = Tokenizer()
         tokens_a = tokenizer.convert_xml_file_into_tokens(witA)
         tokens_b = tokenizer.convert_xml_file_into_tokens(witB)
@@ -22,8 +22,8 @@ class SuperwitnessText(unittest.TestCase):
         self.assertEqual(expected, list_superwitness_string)
 
     def test_superwitness_tokens(self):
-        witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
-        witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
+        witA = open("../input_xml/witA-s021-simple.xml")
+        witB = open("../input_xml/witB-s021-simple.xml")
         tokenizer = Tokenizer()
         tokens_a = tokenizer.convert_xml_file_into_tokens(witA)
         tokens_b = tokenizer.convert_xml_file_into_tokens(witB)
@@ -36,8 +36,8 @@ class SuperwitnessText(unittest.TestCase):
         self.assertEqual(expected, list_superwitness_string)
 
     def test_superwitness_segmentation(self):
-        witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
-        witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
+        witA = open("../input_xml/witA-s021-simple.xml")
+        witB = open("../input_xml/witB-s021-simple.xml")
         tokenizer = Tokenizer()
         tokens_a = tokenizer.convert_xml_file_into_tokens(witA)
         tokens_b = tokenizer.convert_xml_file_into_tokens(witB)
