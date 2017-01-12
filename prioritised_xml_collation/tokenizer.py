@@ -5,7 +5,6 @@ from xml.dom.pulldom import CHARACTERS, START_ELEMENT, parse, END_ELEMENT, parse
 from collections import namedtuple, defaultdict
 
 
-
 # - make Token object
 # - Traverse the xml file of witness and take out all text characters
 # - Whitespace normalisation
@@ -24,25 +23,12 @@ class Token(object):
 
 
 class TextToken(Token):
-    def __init__(self, content, annot_info):
-        self.annot_info = annot_info
+    def __init__(self, content):
         super(TextToken, self).__init__(content)
 
 
 class ElementToken(Token):
     pass
-
-
-class AnnotationInformation(object):
-    # TODO possible other fields are content, attribute, namespace
-    def __init__(self, tag_name):
-        self.tag_name = tag_name
-
-    def __str__(self):
-        return self.tag_name
-
-    def __repr__(self):
-        return self.tag_name
 
 
 class Stack(list):
@@ -53,39 +39,42 @@ class Stack(list):
         return self[-1]
 
 
-# parse xml file
-def convert_xml_file_into_tokens(xml_filename):
-    doc = parse(xml_filename)
-    return convert_xml_doc_into_tokens(doc)
+class Tokenizer(object):
+    def convert_xml_string_into_tokens(self, xml_string):
+        # string is in memory
+        xml = parseString(xml_string)
+        return self.convert_xml_into_tokens(xml)
+
+    def convert_xml_file_into_tokens(self, xml_filename):
+        xml = parse(xml_filename)
+        return self.convert_xml_into_tokens(xml)
+
+    def convert_xml_into_tokens(self, xml):
+        # xml is a stream of xml characters,
+        # which can come in the form of a string or in the form of a file
+        # init output
+        # NOTE: tokens objects are made so to make them unique (localName can be repeated)
+        # NOTE: we might want to make the tokens more complex to store the original location in xpath form
+        tokens = []
+        for event, node in xml:
+            # debug
+            # print(event, node)
+            if event == CHARACTERS:
+                tokens.extend(self.tokenize_text(node.data))
+
+            elif event == START_ELEMENT:
+                tokens.append(ElementToken(node.localName))
+
+            elif event == END_ELEMENT:
+                tokens.append(ElementToken("/" + node.localName))
+        return tokens
+
+    # tokenize text
+    # data adds text to current element; data is a string
+    def tokenize_text(self, data):
+        return (TextToken(content) for content in re.findall(r'\w+|[^\w\s]+', data))
 
 
-# convert xml document into tokens
-def convert_xml_doc_into_tokens(xml_doc):
-    tokens = []
-    # keep administration with stack
-    open_tags_in_witness = Stack()
-    annot_info = None
-    for event, node in xml_doc:
-        if event == CHARACTERS:
-            tokens.extend(tokenize_text(node.data, annot_info))
-        elif event == START_ELEMENT:
-            annot_info = AnnotationInformation(node.tagName)
-            # append item annot_info to stack list
-            open_tags_in_witness.push(annot_info)
-        elif event == END_ELEMENT:
-            # retrieve item from top of stack
-            open_tags_in_witness.pop()
-            if open_tags_in_witness:
-                annot_info = open_tags_in_witness.peek()
-
-    return tokens
-
-
-
-# tokenize text
-# data adds text to current element; data is a string
-def tokenize_text(data, annot_info):
-    return (TextToken(content, annot_info) for content in re.findall(r'\w+|[^\w\s]+', data))
 # returns list of text token objects
 
 

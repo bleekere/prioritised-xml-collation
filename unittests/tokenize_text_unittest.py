@@ -1,7 +1,7 @@
 import unittest
 
 from prioritised_xml_collation.tokenizer import convert_xml_file_into_tokens
-
+# TODO update functionality and expected output
 
 class TokenizeText(unittest.TestCase):
     def test_text_tokens(self):
