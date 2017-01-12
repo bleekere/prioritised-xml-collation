@@ -36,8 +36,8 @@ class SuperwitnessText(unittest.TestCase):
         self.assertEqual(expected, list_superwitness_string)
 
     def test_superwitness_segmentation(self):
-        witA = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-s021-simple.xml")
-        witB = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witB-s021-simple.xml")
+        witA = open("../input_xml/witA-s021-simple.xml")
+        witB = open("../input_xml/witB-s021-simple.xml")
         tokenizer = Tokenizer()
         tokens_a = tokenizer.convert_xml_file_into_tokens(witA)
         tokens_b = tokenizer.convert_xml_file_into_tokens(witB)

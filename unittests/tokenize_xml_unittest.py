@@ -5,7 +5,7 @@ from prioritised_xml_collation.tokenizer import Tokenizer
 
 class TokenizeXML(unittest.TestCase):
     def test_tokenize_xml(self):
-        input = open("/Users/ellibleeker/PycharmProjects/prioritised_xml_collation/input_xml/witA-simple.xml")
+        input = open("../input_xml/witA-simple.xml")
         tokenizer = Tokenizer()
         tokens = str(tokenizer.convert_xml_file_into_tokens(input))
         # tokens are returned as a list
