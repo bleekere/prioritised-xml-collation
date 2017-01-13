@@ -1,8 +1,10 @@
 import unittest
+from hamcrest import *
 
 from prioritised_xml_collation.EditGraphAligner import EditGraphAligner
 from prioritised_xml_collation.coordination import align_tokens_and_return_superwitness
-from prioritised_xml_collation.tokenizer import Tokenizer
+from prioritised_xml_collation.tokenizer import Tokenizer, TextToken
+from prioritised_xml_collation.replacement_scorer import ReplacementScorer
 
 
 class SuperwitnessText(unittest.TestCase):
@@ -56,6 +58,37 @@ class SuperwitnessText(unittest.TestCase):
                     ("aligned", "[vóór, de]"), ("+", "[lb, /lb]"), ("aligned", "[liefelijke, toestemming]"),
                     ("replaced", "[!] -> [.]"), ("aligned", "[/s, /p, /div, /body, /text]")]
         self.assertEqual(expected, segmented_superwitness)
+
+    def test_match_punctuation(self):
+        token_A = TextToken(",")
+        token_B = TextToken("!")
+        score_punctuation = ReplacementScorer()
+        punctuation_tokens = score_punctuation.match(token_A, token_B)
+        self.assertEqual(0, punctuation_tokens)
+
+    def test_no_match_punctuation(self):
+        token_A = TextToken("Hoe")
+        token_B = TextToken("!")
+        score_punctuation = ReplacementScorer()
+        punctuation_tokens = score_punctuation.match(token_A, token_B)
+        assert_that(punctuation_tokens, is_(-1))
+        # self.assertEqual(-1, punctuation_tokens)
+
+    def test_no_match_either_punctuation(self):
+        token_A = TextToken(",")
+        token_B = TextToken("dit")
+        score_punctuation = ReplacementScorer()
+        punctuation_tokens = score_punctuation.match(token_A, token_B)
+        expected = -1
+        self.assertEqual(expected, punctuation_tokens)
+
+    def test_another_match_punctuation(self):
+        token_A = TextToken("...")
+        token_B = TextToken(",")
+        score_punctuation = ReplacementScorer()
+        punctuation_tokens = score_punctuation.match(token_A, token_B)
+        expected = 0
+        self.assertEqual(expected, punctuation_tokens)
 
     def refine_segments_of_superwitness(self, tokens_a, tokens_b):
         superwitness = align_tokens_and_return_superwitness(tokens_a, tokens_b)

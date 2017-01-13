@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 class Scorer(ABC):
-    @abstractmethod
     def score_cell(self, table_node, parent_node, token_a, token_b, y, x, edit_operation):
         # no matching possible in this case (always treated as a gap)
         # it is either an add or a delete
