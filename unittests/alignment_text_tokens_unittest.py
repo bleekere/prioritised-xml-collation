@@ -3,7 +3,7 @@ from hamcrest import *
 
 from prioritised_xml_collation.EditGraphAligner import EditGraphAligner
 from prioritised_xml_collation.coordination import align_tokens_and_return_superwitness
-from prioritised_xml_collation.tokenizer import Tokenizer, TextToken
+from prioritised_xml_collation.tokenizer import Tokenizer, TextToken, ElementToken
 from prioritised_xml_collation.replacement_scorer import ReplacementScorer
 
 
@@ -39,8 +39,9 @@ class SuperwitnessText(unittest.TestCase):
                     '/s, /p, /div, /body, /text']
         self.assertEqual(expected, list_superwitness_string)
 
-    @unittest.skip("Unittest fails because alignment code is not yet performing correctly")
+    @unittest.skip("Unittest fails because alignment code is not yet performing as desired where it comes to the nested <s>")
     def test_superwitness_segmentation(self):
+        self.maxDiff=None
         witA = open("../input_xml/witA-s021-simple.xml")
         witB = open("../input_xml/witB-s021-simple.xml")
         tokenizer = Tokenizer()
@@ -53,8 +54,8 @@ class SuperwitnessText(unittest.TestCase):
         # and a string representation of the token concent
         expected = [("aligned", "[text, body, div, p, s, Hoe, zoet, moet, nochtans, zijn, dit]"),
                     ("-", "[lb, /lb]"), ("aligned", "[del, werven, om, /del, add, trachten, naar, /add, een]"),
-                    ("+", "[lb, /lb]"), ("aligned", "[vrouw]"),
-                    ("replaced", "[,, de, ongewisheid] -> [!, Die, dagen, van, nerveuze, verwachting]"),
+                    ("+", "[lb, /lb]"), ("aligned", "[vrouw]"), ("replaced", "[,] -> [!]"), ("+", "[s, /s]"),
+                    ("replaced", "[de, ongewisheid] -> [Die, dagen, van, nerveuze, verwachting]"),
                     ("aligned", "[vóór, de]"), ("+", "[lb, /lb]"), ("aligned", "[liefelijke, toestemming]"),
                     ("replaced", "[!] -> [.]"), ("aligned", "[/s, /p, /div, /body, /text]")]
         self.assertEqual(expected, segmented_superwitness)
@@ -76,19 +77,45 @@ class SuperwitnessText(unittest.TestCase):
 
     def test_no_match_either_punctuation(self):
         token_A = TextToken(",")
-        token_B = TextToken("dit")
+        token_B = TextToken("vrouw")
         score_punctuation = ReplacementScorer()
         punctuation_tokens = score_punctuation.match(token_A, token_B)
-        expected = -1
-        self.assertEqual(expected, punctuation_tokens)
+        self.assertEqual(-1, punctuation_tokens)
 
     def test_another_match_punctuation(self):
         token_A = TextToken("...")
         token_B = TextToken(",")
         score_punctuation = ReplacementScorer()
         punctuation_tokens = score_punctuation.match(token_A, token_B)
-        expected = 0
-        self.assertEqual(expected, punctuation_tokens)
+        self.assertEqual(0, punctuation_tokens)
+
+    def test_punctuation_and_markup_match1(self):
+        token_A = ElementToken("div")
+        token_B = ElementToken("p")
+        score_punctuation_and_markup = ReplacementScorer()
+        punct_and_markup_tokens = score_punctuation_and_markup.match(token_A, token_B)
+        assert_that(punct_and_markup_tokens, is_(0))
+
+    def test_punctuation_and_markup_match2(self):
+        token_A = TextToken("!")
+        token_B = ElementToken("p")
+        score_punctuation_and_markup = ReplacementScorer()
+        punct_and_markup_tokens = score_punctuation_and_markup.match(token_A, token_B)
+        assert_that(punct_and_markup_tokens, is_(-1))
+
+    def test_punctuation_and_markup_match3(self):
+        token_A = ElementToken("div")
+        token_B = TextToken("Hoe")
+        score_punctuation_and_markup = ReplacementScorer()
+        punct_and_markup_tokens = score_punctuation_and_markup.match(token_A, token_B)
+        assert_that(punct_and_markup_tokens, is_(-1))
+
+    def test_punctuation_and_markup_match4(self):
+        token_A = TextToken("zijn")
+        token_B = TextToken("nerveuze")
+        score_punctuation_and_markup = ReplacementScorer()
+        punct_and_markup_tokens = score_punctuation_and_markup.match(token_A, token_B)
+        assert_that(punct_and_markup_tokens, is_(-1 ))
 
     def refine_segments_of_superwitness(self, tokens_a, tokens_b):
         superwitness = align_tokens_and_return_superwitness(tokens_a, tokens_b)

@@ -23,8 +23,10 @@ class Token(object):
 
 
 class TextToken(Token):
-    def __init__(self, content):
-        super(TextToken, self).__init__(content)
+    pass
+    # code below not deleted for safety reasons
+    # def __init__(self, content):
+    #     super(TextToken, self).__init__(content)
 
 
 class ElementToken(Token):
@@ -71,11 +73,14 @@ class Tokenizer(object):
 
     # tokenize text
     # data adds text to current element; data is a string
+    # returns list of text token objects
     def tokenize_text(self, data):
         return (TextToken(content) for content in re.findall(r'\w+|[^\w\s]+', data))
 
+    # add def tokenize_file?
 
-# returns list of text token objects
+
+
 
 
 
