@@ -6,7 +6,6 @@
 """
 from typing import Tuple, List
 
-from prioritised_xml_collation.exact_match_scorer import TextScorer
 from prioritised_xml_collation.tokenizer import Token
 
 
@@ -88,8 +87,8 @@ class ExtendedToken(object):
 
 
 class EditGraphAligner(object):
-    def __init__(self):
-        self.scorer = TextScorer()
+    def __init__(self, scorer):
+        self.scorer = scorer
 
     def align(self, tokens_witness_a, tokens_witness_b):
         self.tokens_witness_a = tokens_witness_a

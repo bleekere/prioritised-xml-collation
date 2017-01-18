@@ -1,10 +1,10 @@
 from Levenshtein import ratio
-from prioritised_xml_collation.abstract_scorer import Scorer
+from prioritised_xml_collation.AbstractClassScorer import Scorer
 from prioritised_xml_collation.tokenizer import ElementToken
 import re
 
 
-class ReplacementScorer(Scorer):
+class TypeScorer(Scorer):
     def __init__(self):
         pass
 
