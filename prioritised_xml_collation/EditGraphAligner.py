@@ -6,6 +6,7 @@
 """
 from typing import Tuple, List
 
+
 from prioritised_xml_collation.tokenizer import Token
 
 
@@ -84,6 +85,15 @@ class ExtendedToken(object):
             else:
                 prefix += "-"
         return ", ".join([prefix + self.token.content])
+
+
+class Node(object):
+    def __init__(self, content):
+        self.content = content
+        self.children = []
+
+    def add_child(self, node):
+        self.children.append(node)
 
 
 class EditGraphAligner(object):

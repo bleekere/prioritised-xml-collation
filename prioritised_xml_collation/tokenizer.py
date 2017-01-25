@@ -12,7 +12,7 @@ from collections import namedtuple, defaultdict
 # - Return list of tokens
 
 class Token(object):
-    def __init__(self, content):
+    def __init__(self, content: object) -> object:
         self.content = content
 
     def __str__(self):

@@ -6,7 +6,7 @@ from Levenshtein import ratio
 from prioritised_xml_collation.AbstractClassScorer import Scorer
 
 
-class TextScorer(Scorer):
+class ContentScorer(Scorer):
     def __init__(self, near_match=False, properties_filter=None):
         self.properties_filter=properties_filter
         if near_match:

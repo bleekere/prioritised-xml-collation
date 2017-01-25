@@ -1,11 +1,15 @@
 import unittest
 from hamcrest import *
+from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.helpers.hasmethod import hasmethod
 
 from prioritised_xml_collation.EditGraphAligner import EditGraphAligner
 from prioritised_xml_collation.coordination import align_tokens_and_return_superwitness, \
     align_tokens_on_type_and_return_superwitness
-from prioritised_xml_collation.tokenizer import Tokenizer, TextToken, ElementToken
+from prioritised_xml_collation.tokenizer import Tokenizer, TextToken, ElementToken, Token
 from prioritised_xml_collation.type_scorer import TypeScorer
+from prioritised_xml_collation.EditGraphAligner import Node
+from prioritised_xml_collation.custom_matchers import token_content
 
 
 class SuperwitnessText(unittest.TestCase):
@@ -135,26 +139,20 @@ class SuperwitnessText(unittest.TestCase):
                     ('aligned', '[/text]', '[/p, /text]')]
         assert_that(expected, segmented_second_superwitness)
 
-    def define_segments_of_superwitness_on_type(self, tokens_a, tokens_b):
-        second_superwitness = align_tokens_on_type_and_return_superwitness(tokens_a, tokens_b)
-        aligned_second_superwitness = []
-        for segment in second_superwitness:
-            # print(segment)
-            tokens_witness_a, tokens_witness_b = segment.tokens
-            # aligned on type match, not on content match
-            if not segment.aligned:
-                if segment.replacement:
-                    aligned_second_superwitness.append(
-                        ("replaced", str(tokens_witness_a) + " -> " + str(tokens_witness_b)))
-                elif segment.addition:
-                    aligned_second_superwitness.append(("+", str(tokens_witness_b)))
-                else:
-                    # segment is omission
-                    aligned_second_superwitness.append(("-", str(tokens_witness_a)))
-            # else it is aligned
-            else:
-                aligned_second_superwitness.append(("aligned", str(tokens_witness_a), str(tokens_witness_b)))
-        return aligned_second_superwitness
+    # def test_combined_alignment(self):
+    #     self.maxDiff = None
+    #     witness_a = open("../input_xml/witA-s021-2nd-alignment.xml")
+    #     witness_b = open("../input_xml/witB-s021-2nd-alignment.xml")
+    #     tokenizer = Tokenizer()
+    #     tokens_a = tokenizer.convert_xml_file_into_tokens(witness_a)
+    #     tokens_b = tokenizer.convert_xml_file_into_tokens(witness_b)
+    #     self.two_step_alignment(tokens_a, tokens_b)
+    #     self.fail(msg="Expected failure")
+
+    def test_custom_matcher_token(self):
+        actual_token = Token("text") # Token has one property "content"
+        assert_that(actual_token, is_(token_content("text")))
+
 
     def define_segments_of_superwitness(self, tokens_a, tokens_b):
         superwitness = align_tokens_and_return_superwitness(tokens_a, tokens_b)
@@ -175,3 +173,51 @@ class SuperwitnessText(unittest.TestCase):
             else:
                 segmented_superwitness.append(("aligned", str(tokens_witness_a)))
         return segmented_superwitness
+
+
+    def define_segments_of_superwitness_on_type(self, tokens_a, tokens_b):
+        second_superwitness = align_tokens_on_type_and_return_superwitness(tokens_a, tokens_b)
+        aligned_second_superwitness = []
+        for segment in second_superwitness:
+            tokens_witness_a, tokens_witness_b = segment.tokens
+            # aligned on type match, not on content match
+            if not segment.aligned:
+                if segment.replacement:
+                    aligned_second_superwitness.append(
+                        ("replaced", str(tokens_witness_a) + " -> " + str(tokens_witness_b)))
+                elif segment.addition:
+                    aligned_second_superwitness.append(("+", str(tokens_witness_b)))
+                else:
+                    # segment is omission
+                    aligned_second_superwitness.append(("-", str(tokens_witness_a)))
+            # else it is aligned
+            else:
+                aligned_second_superwitness.append(("aligned", str(tokens_witness_a), str(tokens_witness_b)))
+        return aligned_second_superwitness
+
+
+    def add_superwitness_to_tree(self, segmented_superwitness):
+        root = Node(None)
+        for segment in segmented_superwitness:
+            node = Node(segment)
+            root.add_child(node)
+        return root
+
+
+    # def two_step_alignment(self, tokens_a, tokens_b):
+    #     content_segmented_superwitness = align_tokens_and_return_superwitness(tokens_a, tokens_b)
+    #     input_second_alignment = []
+    #     for segment in content_segmented_superwitness:
+    #         # segment is a tuple in a list; we check the first value of the tuple
+    #         if segment.replacement:
+    #             input_second_alignment.append(segment)
+    #     # take this as input to realign tokens
+    #     if not input_second_alignment:
+    #         return content_segmented_superwitness
+    #     else:
+    #         type_segments = {}
+    #         for segment in input_second_alignment:
+    #             tokens_a, tokens_b = segment.tokens
+    #             type_segmented_superwitness = align_tokens_on_type_and_return_superwitness(tokens_a, tokens_b)
+    #             type_segments[segment] = type_segmented_superwitness
+    #     print(type_segments)
