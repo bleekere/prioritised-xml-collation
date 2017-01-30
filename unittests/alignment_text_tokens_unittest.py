@@ -121,7 +121,7 @@ class SuperwitnessText(unittest.TestCase):
         token_B = TextToken("nerveuze")
         score_punctuation_and_markup = TypeScorer()
         punct_and_markup_tokens = score_punctuation_and_markup.match(token_A, token_B)
-        assert_that(punct_and_markup_tokens, is_(-1))
+        assert_that(punct_and_markup_tokens, is_(0))
 
     def test_second_alignment(self):
         self.maxDiff = None

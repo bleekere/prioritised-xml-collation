@@ -3,13 +3,12 @@ from hamcrest.core.base_matcher import BaseMatcher
 from prioritised_xml_collation.tokenizer import TextToken, Token
 
 
-class TokenContent(BaseMatcher):
+class TokenContentMatcher(BaseMatcher):
     def __init__(self, expected_token):
         self.expected_token = expected_token
 
     # check if given item has content field
     def _matches(self, item):
-        print(str(item))
         if not isinstance(item, Token):
             return False
         # if item has content field, check if content matches
@@ -19,6 +18,6 @@ class TokenContent(BaseMatcher):
         description.append_text("Expected content to be " + self.expected_token.content + ".")
         # mismatch_description.append_text("but token has" + item.content + "instead.")
 
-def token_content(expected_text):
-    content_token = Token(expected_text)
-    return TokenContent(content_token)
+def token_content(expected_content):
+    expected_token = Token(expected_content)
+    return TokenContentMatcher(expected_token)

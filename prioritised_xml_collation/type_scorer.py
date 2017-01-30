@@ -17,3 +17,5 @@ class TypeScorer(Scorer):
             return 0
         else:
             return -1
+
+    # TODO match now defined as tokens are both punctuation or both markup; we want to test also on type=text
